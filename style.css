@@ -1,0 +1,362 @@
+/*DES ÉLÉMENTS ONT ÉTÉ REPRIS DU SITE UIVERSE.IO (ÉLÉMENTS CSS + HTML DÉJÀ CRÉÉS*/
+
+
+
+
+/* ==========================================================================
+   Variables
+   ========================================================================== */
+:root {
+  --primary-color: #1a365d;
+  --primary-dark: #0f2647;
+  --secondary-color: #2c5282;
+  --accent-color: #3182ce;
+  --text-dark: #2d3748;
+  --text-light: #718096;
+  --bg-light: #f7fafc;
+  --bg-white: #ffffff;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--text-dark);
+  background-color: var(--bg-light);
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--primary-dark);
+}
+
+h1, h3, p {
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+h2 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+p {
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a, .carte-requete {
+  transition: all 0.3s ease;
+}
+
+ul {
+  list-style: none;
+}
+
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 1rem 0;
+  background: var(--bg-white);
+  box-shadow: var(--shadow);
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nom-sae {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.menu-sae {
+  display: flex;
+  gap: 2rem;
+}
+
+.menu-sae a {
+  padding: 0.5rem 0;
+  font-weight: 500;
+}
+
+.menu-sae a:hover {
+  color: var(--accent-color);
+}
+
+/* ==========================================================================
+   Mise en page
+   ========================================================================== */
+/* Compense la hauteur du header fixe et garde le footer en bas de l'écran. */
+main {
+  margin-top: 80px;
+  min-height: calc(100vh - 200px);
+}
+
+nav, .contenu-bdd {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.contenu-presentation, .description-projet {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.section-bdd {
+  padding: 8rem 2rem;
+}
+
+.titre-section-bdd {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+/* ==========================================================================
+   Bouton
+   ========================================================================== */
+.actions-accueil {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-requete {
+  display: inline-block;
+  padding: 0.875rem 2rem;
+  background: var(--primary-color);
+  color: var(--bg-white);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btn-requete:hover {
+  background: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ==========================================================================
+   Cartes
+   ========================================================================== */
+.carte-requete, .description-projet {
+  background: var(--bg-white);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.description-projet {
+  padding: 3rem;
+  line-height: 1.8;
+}
+
+/* min() évite qu'une colonne de 350px déborde sur les petits écrans. */
+.grille-requetes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(350px, 100%), 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.carte-requete {
+  padding: 2rem;
+}
+
+.carte-requete:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.carte-requete {
+  min-width: 0; /* permet au bloc de code de défiler au lieu d'élargir la carte */
+}
+
+.carte-requete h3 {
+  color: var(--primary-color);
+}
+
+.code-sql {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--primary-dark);
+  color: var(--bg-light);
+  border-radius: 6px;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  overflow-x: auto;
+}
+
+.carte-requete p, .tags-sql {
+  margin-bottom: 1.5rem;
+}
+
+.tags-sql {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-sql {
+  padding: 0.4rem 0.8rem;
+  background: var(--bg-light);
+  color: var(--primary-color);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Indicateur personnel
+   ========================================================================== */
+.section-indicateur {
+  padding-top: 0;
+}
+
+.carte-indicateur:hover {
+  transform: none; /* carte longue : pas d'effet de soulèvement */
+}
+
+.carte-indicateur h4 {
+  margin: 2rem 0 0.75rem;
+  color: var(--secondary-color);
+  font-size: 1.1rem;
+}
+
+.carte-indicateur code {
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.liste-explication {
+  margin-bottom: 1.5rem;
+  padding-left: 1.25rem;
+  list-style: disc;
+  color: var(--text-light);
+}
+
+.liste-explication li {
+  margin-bottom: 0.5rem;
+}
+
+.tableau-defilant {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.tableau-resultat {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tableau-resultat th,
+.tableau-resultat td {
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tableau-resultat th:first-child,
+.tableau-resultat td:first-child {
+  text-align: left;
+}
+
+.tableau-resultat thead th {
+  background: var(--primary-color);
+  color: var(--bg-white);
+}
+
+.tableau-resultat tfoot td {
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.ligne-alerte td {
+  background: #fff5f5;
+  color: #9b2c2c;
+}
+
+.lecture-resultat {
+  padding: 1rem;
+  background: var(--bg-light);
+  border-left: 4px solid var(--accent-color);
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   Pied de page
+   ========================================================================== */
+footer {
+  margin-top: 4rem;
+  padding: 2rem;
+  background: var(--primary-dark);
+  text-align: center;
+}
+
+footer p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+  .menu-sae {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem 1rem;
+  }
+
+  .actions-accueil {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-bdd {
+    padding: 5rem 1rem;
+  }
+
+  .contenu-bdd {
+    padding: 0 1rem;
+  }
+}

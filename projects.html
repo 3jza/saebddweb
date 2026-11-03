@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mes projets - Découvrez mes réalisations en développement web et IoT">
+  <title>Requêtes - SAE BDD & WEB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <nav>
+      <a href="index.html" class="nom-sae">SAE BDD & WEB</a> <!-- nom-sae : titre du site, ramène à l'accueil -->
+      <ul class="menu-sae"> <!-- menu-sae : liens de navigation entre les pages -->
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="about.html">À propos</a></li>
+        <li><a href="projects.html">Requêtes</a></li>
+      </ul>
+    </nav>
+  </header>
+
+
+  <main>
+
+    <section class="section-bdd"> <!-- contenu de la page-->
+      <div class="contenu-bdd"> <!-- contenu-bdd : regroupe le titre et le contenu de la section -->
+        <h2 class="titre-section-bdd">Les requêtes</h2> <!-- titre-section-bdd : titre de la page -->
+        <div class="grille-requetes"> <!-- grille-requetes : regroupe les cartes des requêtes -->
+
+
+          <!-- COPIER COLLER POUR CHAQUE REQUETES -->
+          <div class="carte-requete"> <!-- carte-requete : une requête, avec son titre, sa description, son code et ses tags -->
+            <h3>R1b - Produits USA à moins de 25</h3>
+            <p>
+              Liste des produits fournis par des fournisseurs situés aux États-Unis dont le coût d'achat est inférieur à 25,
+              avec leur prix de vente calculé (coût d'achat × coefficient de marge de la catégorie).
+            </p>
+<pre class="code-sql"><code>SELECT P.NomProd, P.CoutAchat,
+       Round(P.CoutAchat * C.CoefMarge, 2) AS PrixVente,
+       F.Societe AS Fournisseur, F.Ville
+FROM ((Produit AS P
+      INNER JOIN Fournisseur AS F ON P.NoFour = F.NoFour)
+      INNER JOIN Pays AS Y ON F.NoPays = Y.NoPays)
+      INNER JOIN Categorie AS C ON P.CodeCateg = C.CodeCateg
+WHERE Y.PaysFR = "Etats-Unis" AND P.CoutAchat &lt; 25
+ORDER BY P.CoutAchat;</code></pre> <!-- code-sql : code de la requête -->
+          </div>
+          <!-- FIN REQUETE ICI -->
+
+
+          <div class="carte-requete">
+            <h3>R1c - Viandes et poissons à plus de 50</h3>
+            <p>
+              Produits des catégories « Viandes » et « Poissons et fruits de mer » dont le coût d'achat dépasse 50,
+              avec leur fournisseur et son pays, triés par catégorie puis par coût décroissant.
+            </p>
+<pre class="code-sql"><code>SELECT C.NomCateg, P.NomProd, P.CoutAchat, F.Societe AS Fournisseur, Y.PaysFR AS Pays
+FROM ((Produit AS P
+      INNER JOIN Categorie AS C ON P.CodeCateg = C.CodeCateg)
+      INNER JOIN Fournisseur AS F ON P.NoFour = F.NoFour)
+      INNER JOIN Pays AS Y ON F.NoPays = Y.NoPays
+WHERE C.NomCateg IN ("Viandes", "Poissons et fruits de mer")
+  AND P.CoutAchat &gt; 50
+ORDER BY C.NomCateg, P.CoutAchat DESC;</code></pre>
+          </div>
+
+
+          <div class="carte-requete">
+            <h3>R1d - Fournisseurs de viande OU de poisson</h3>
+            <p>
+              Fournisseurs proposant au moins un produit de la catégorie viandes (6) ou poissons (8),
+              sans doublon grâce à DISTINCT.
+            </p>
+<pre class="code-sql"><code>SELECT DISTINCT F.NoFour, F.Societe
+FROM Fournisseur AS F INNER JOIN Produit AS P ON F.NoFour = P.NoFour
+WHERE P.CodeCateg IN (6, 8)
+ORDER BY F.Societe;</code></pre>
+          </div>
+
+
+          <div class="carte-requete">
+            <h3>R1e - Fournisseurs de viande ET de poisson</h3>
+            <p>
+              Fournisseurs proposant à la fois des produits de la catégorie viandes (6) et de la catégorie poissons (8),
+              obtenus par l'intersection de deux sous-requêtes.
+            </p>
+<pre class="code-sql"><code>SELECT F.NoFour, F.Societe
+FROM Fournisseur AS F
+WHERE F.NoFour IN (SELECT NoFour FROM Produit WHERE CodeCateg = 6)
+  AND F.NoFour IN (SELECT NoFour FROM Produit WHERE CodeCateg = 8)
+ORDER BY F.Societe;</code></pre>
+          </div>
+
+
+          <div class="carte-requete">
+            <h3>R1f - Produits en carton ou en verre</h3>
+            <p>
+              Produits dont le conditionnement contient « carton » ou « verre »,
+              avec une colonne calculée indiquant le type de conditionnement.
+            </p>
+<pre class="code-sql"><code>SELECT NomProd, QteParUnit,
+       IIf(QteParUnit LIKE "*carton*", "Carton", "Verre") AS Conditionnement
+FROM Produit
+WHERE QteParUnit LIKE "*carton*" OR QteParUnit LIKE "*verre*"
+ORDER BY IIf(QteParUnit LIKE "*carton*", "Carton", "Verre"), NomProd;</code></pre>
+          </div>
+
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- INDICATEUR PERSONNEL (proposition obligatoire de chaque membre) -->
+    <section class="section-bdd section-indicateur"> <!-- section-indicateur : section de l'indicateur personnel -->
+      <div class="contenu-bdd">
+        <h2 class="titre-section-bdd">Indicateur personnel</h2>
+
+        <div class="carte-requete carte-indicateur"> <!-- carte-indicateur : carte large qui ne bouge pas au survol -->
+          <h3>R6 - Dépendance aux fournisseurs hors UE par catégorie</h3>
+
+          <h4>1. Énoncé et objectif</h4>
+          <p>
+            Pour chaque catégorie de produits, quel chiffre d'affaires KDou réalise-t-il avec des produits achetés
+            à des fournisseurs <strong>hors Union européenne</strong>, quelle part du CA de la catégorie cela
+            représente-t-il, et combien de fournisseurs de l'UE KDou a-t-il déjà dans cette catégorie ?
+            <br>Objectif : repérer les catégories où KDou pourrait <strong>relocaliser ses achats</strong> vers des
+            fournisseurs européens qu'il connaît déjà.
+          </p>
+
+          <h4>2. Intérêt dans le contexte</h4>
+          <p>
+            KDou veut une image plus « éco-friendly ». Un produit venu d'Australie ou du Japon parcourt des milliers
+            de kilomètres. Cet indicateur montre où ces imports pèsent le plus dans les ventes et si un fournisseur
+            européen déjà référencé pourrait prendre le relais.
+          </p>
+
+          <h4>3. Requête SQL et conception</h4>
+<pre class="code-sql"><code>SELECT C.NomCateg,
+       Round(Sum(D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)])), 2) AS CA_Total,
+       Round(Sum(IIf(Y.UE = "Hors",
+             D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)]), 0)), 2) AS CA_HorsUE,
+       Round(100 * Sum(IIf(Y.UE = "Hors",
+             D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)]), 0))
+           / Sum(D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)])), 1) AS PartHorsUE_pct,
+       (SELECT Count(*)
+        FROM Fournisseur AS F2 INNER JOIN Pays AS Y2 ON F2.NoPays = Y2.NoPays
+        WHERE Y2.UE = "Membre"
+          AND F2.NoFour IN (SELECT NoFour FROM Produit
+                            WHERE CodeCateg = C.CodeCateg)) AS NbFournisseursUE
+FROM (((DetailCommande AS D
+      INNER JOIN Produit AS P ON D.[Réf produit] = P.RefProd)
+      INNER JOIN Categorie AS C ON P.CodeCateg = C.CodeCateg)
+      INNER JOIN Fournisseur AS F ON P.NoFour = F.NoFour)
+      INNER JOIN Pays AS Y ON F.NoPays = Y.NoPays
+GROUP BY C.CodeCateg, C.NomCateg
+ORDER BY Sum(IIf(Y.UE = "Hors", D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)]), 0))
+       / Sum(D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)])) DESC;</code></pre>
+          <ul class="liste-explication"> <!-- liste-explication : étapes de conception de la requête -->
+            <li><strong>Jointures :</strong> chaque ligne de commande est reliée à son produit, sa catégorie, son fournisseur et le pays de ce fournisseur (champ <code>UE</code> : « Membre » ou « Hors »).</li>
+            <li><strong>CA :</strong> on reprend le calcul des indicateurs 2 et 3 (quantité × coût d'achat × coefficient de marge × (1 − remise)).</li>
+            <li><strong>Somme conditionnelle :</strong> <code>IIf(Y.UE = "Hors", montant, 0)</code> ne garde que le CA hors UE, ce qui donne le total et la part hors UE dans une seule requête.</li>
+            <li><strong>Sous-requête corrélée :</strong> elle compte les fournisseurs de l'UE qui proposent au moins un produit de la catégorie. Access ne connaît pas <code>Count(DISTINCT …)</code>, d'où le <code>IN</code>.</li>
+            <li><strong>Tri :</strong> par part hors UE décroissante, pour voir en premier les catégories qui dépendent le plus des imports lointains.</li>
+          </ul>
+
+          <h4>4. Résultat</h4>
+          <div class="tableau-defilant"> <!-- tableau-defilant : permet de faire défiler le tableau sur téléphone -->
+            <table class="tableau-resultat">
+              <thead>
+                <tr><th>Catégorie</th><th>CA total</th><th>CA hors UE</th><th>Part hors UE</th><th>Fourn. UE</th></tr>
+              </thead>
+              <tbody>
+                <tr class="ligne-alerte"><td>Produits secs</td><td>441 914,88 €</td><td>398 908,00 €</td><td>90,3 %</td><td>1</td></tr>
+                <tr class="ligne-alerte"><td>Viandes</td><td>677 648,36 €</td><td>479 107,32 €</td><td>70,7 %</td><td>3</td></tr>
+                <tr class="ligne-alerte"><td>Condiments</td><td>569 192,92 €</td><td>378 279,05 €</td><td>66,5 %</td><td>2</td></tr>
+                <tr><td>Poissons et fruits de mer</td><td>307 088,43 €</td><td>165 379,48 €</td><td>53,9 %</td><td>6</td></tr>
+                <tr><td>Desserts</td><td>546 885,18 €</td><td>232 656,52 €</td><td>42,5 %</td><td>5</td></tr>
+                <tr><td>Boissons</td><td>1 029 035,03 €</td><td>347 927,87 €</td><td>33,8 %</td><td>7</td></tr>
+                <tr><td>Pâtes et céréales</td><td>333 107,86 €</td><td>65 520,59 €</td><td>19,7 %</td><td>4</td></tr>
+                <tr><td>Produits laitiers</td><td>1 058 517,17 €</td><td>141 081,25 €</td><td>13,3 %</td><td>4</td></tr>
+              </tbody>
+              <tfoot>
+                <tr><td>Total</td><td>4 963 389,79 €</td><td>2 208 860,07 €</td><td>44,5 %</td><td></td></tr>
+              </tfoot>
+            </table>
+          </div>
+          <p class="lecture-resultat"> <!-- lecture-resultat : interprétation du résultat pour les associés -->
+            <strong>À retenir :</strong> 44,5 % du CA vient de produits importés hors UE. Les produits secs (90 %),
+            les viandes (71 %) et les condiments (67 %) en dépendent le plus. Pour les viandes, KDou a déjà 3
+            fournisseurs européens qui pourraient remplacer en partie les imports du Japon, du Canada et
+            d'Australie. Pour les produits secs, il n'y en a qu'un : il faudrait d'abord trouver de nouveaux
+            fournisseurs dans l'UE.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 - SAE BDD & WEB</p>
+  </footer>
+
+</body>
+</html>

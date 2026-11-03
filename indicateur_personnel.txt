@@ -1,0 +1,95 @@
+=====================================================================
+ INDICATEUR PERSONNEL - SAE KDou
+ R6 - Dépendance aux fournisseurs hors UE par catégorie
+=====================================================================
+
+
+1. ÉNONCÉ DE LA REQUÊTE ET OBJECTIF
+---------------------------------------------------------------------
+Pour chaque catégorie de produits, quel chiffre d'affaires KDou réalise-t-il
+avec des produits achetés à des fournisseurs hors Union européenne, quelle
+part du CA de la catégorie cela représente-t-il, et combien de fournisseurs
+de l'UE KDou a-t-il déjà dans cette catégorie ?
+
+Objectif : repérer les catégories où KDou pourrait relocaliser ses achats
+vers des fournisseurs européens qu'il connaît déjà.
+
+
+2. INTÉRÊT DE LA REQUÊTE DANS LE CONTEXTE
+---------------------------------------------------------------------
+KDou veut une image plus « éco-friendly ». Un produit venu d'Australie ou du
+Japon parcourt des milliers de kilomètres. Cet indicateur montre où ces
+imports pèsent le plus dans les ventes et si un fournisseur européen déjà
+référencé pourrait prendre le relais.
+
+
+3. REQUÊTE SQL (Access)
+---------------------------------------------------------------------
+SELECT C.NomCateg,
+       Round(Sum(D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)])), 2) AS CA_Total,
+       Round(Sum(IIf(Y.UE = "Hors",
+             D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)]), 0)), 2) AS CA_HorsUE,
+       Round(100 * Sum(IIf(Y.UE = "Hors",
+             D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)]), 0))
+           / Sum(D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)])), 1) AS PartHorsUE_pct,
+       (SELECT Count(*)
+        FROM Fournisseur AS F2 INNER JOIN Pays AS Y2 ON F2.NoPays = Y2.NoPays
+        WHERE Y2.UE = "Membre"
+          AND F2.NoFour IN (SELECT NoFour FROM Produit
+                            WHERE CodeCateg = C.CodeCateg)) AS NbFournisseursUE
+FROM (((DetailCommande AS D
+      INNER JOIN Produit AS P ON D.[Réf produit] = P.RefProd)
+      INNER JOIN Categorie AS C ON P.CodeCateg = C.CodeCateg)
+      INNER JOIN Fournisseur AS F ON P.NoFour = F.NoFour)
+      INNER JOIN Pays AS Y ON F.NoPays = Y.NoPays
+GROUP BY C.CodeCateg, C.NomCateg
+ORDER BY Sum(IIf(Y.UE = "Hors", D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)]), 0))
+       / Sum(D.Quantité * P.CoutAchat * C.CoefMarge * (1 - D.[Remise (%)])) DESC;
+
+
+EXPLICATION DE LA CONCEPTION
+---------------------------------------------------------------------
+- Jointures : chaque ligne de commande est reliée à son produit, sa
+  catégorie, son fournisseur et le pays de ce fournisseur (champ UE :
+  « Membre » ou « Hors »).
+- CA : on reprend le calcul des indicateurs 2 et 3
+  (quantité x coût d'achat x coefficient de marge x (1 - remise)).
+- Somme conditionnelle : IIf(Y.UE = "Hors", montant, 0) ne garde que le CA
+  hors UE, ce qui donne le total et la part hors UE dans une seule requête.
+- Sous-requête corrélée : elle compte les fournisseurs de l'UE qui proposent
+  au moins un produit de la catégorie. Access ne connaît pas
+  Count(DISTINCT ...), d'où le IN.
+- Tri : par part hors UE décroissante, pour voir en premier les catégories
+  qui dépendent le plus des imports lointains. (Access ne gère pas bien
+  ORDER BY 4, on répète donc l'expression complète.)
+
+
+4. RÉSULTAT
+---------------------------------------------------------------------
+Catégorie                    CA total         CA hors UE      Part hors UE   Fourn. UE
+---------------------------  ---------------  --------------  -------------  ---------
+Produits secs  (*)             441 914,88 €     398 908,00 €     90,3 %         1
+Viandes        (*)             677 648,36 €     479 107,32 €     70,7 %         3
+Condiments     (*)             569 192,92 €     378 279,05 €     66,5 %         2
+Poissons et fruits de mer      307 088,43 €     165 379,48 €     53,9 %         6
+Desserts                       546 885,18 €     232 656,52 €     42,5 %         5
+Boissons                     1 029 035,03 €     347 927,87 €     33,8 %         7
+Pâtes et céréales              333 107,86 €      65 520,59 €     19,7 %         4
+Produits laitiers            1 058 517,17 €     141 081,25 €     13,3 %         4
+---------------------------  ---------------  --------------  -------------  ---------
+TOTAL                        4 963 389,79 €   2 208 860,07 €     44,5 %
+
+(*) catégories les plus dépendantes des imports hors UE
+
+
+À RETENIR (lecture pour les associés de KDou)
+---------------------------------------------------------------------
+44,5 % du CA vient de produits importés hors UE. Les produits secs (90 %),
+les viandes (71 %) et les condiments (67 %) en dépendent le plus.
+Pour les viandes, KDou a déjà 3 fournisseurs européens qui pourraient
+remplacer en partie les imports du Japon, du Canada et d'Australie.
+Pour les produits secs, il n'y en a qu'un : il faudrait d'abord trouver de
+nouveaux fournisseurs dans l'UE.
+
+Vérification : le CA total et le CA hors UE sont identiques à ceux de la
+requête R2b (répartition UE / hors UE).

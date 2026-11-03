@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="À propos - En savoir plus sur mon parcours et mes expériences">
+  <title>Accueil - SAE BDD & WEB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+  <header>
+    <nav>
+      <a href="index.html" class="nom-sae">SAE BDD & WEB</a> <!-- nom-sae : titre du site, ramène à l'accueil -->
+      <ul class="menu-sae"> <!-- menu-sae : liens de navigation entre les pages -->
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="about.html">À propos</a></li>
+        <li><a href="projects.html">Requêtes</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="section-bdd"> <!-- section-bdd : section principale de la page -->
+      <div class="contenu-bdd"> <!-- contenu-bdd : regroupe le titre et le contenu de la section -->
+        <h2 class="titre-section-bdd">À propos de la SAÉ</h2> <!-- titre-section-bdd : titre de la page -->
+
+
+        <div class="description-projet"> <!-- description-projet : texte de présentation -->
+          <p>
+            Pour la SAÉ S1.04 « Création et interrogation d'une base de données », notre équipe devait aider KDou,
+            une entreprise française qui vend des produits d'épicerie fine achetés à des fournisseurs du monde entier.
+            KDou se pose des questions sur sa rentabilité et veut se donner une image plus « éco-friendly ». On nous a
+            fourni sa base Access (KDouSAE2026.accdb) : la première étape a été de comprendre chaque table (Clientele,
+            Commande, DetailCommande, Produit, Categorie, Fournisseur, Pays), de repérer les clés primaires et étrangères
+            et les liens entre elles. Ensuite, nous avons répondu aux questions du sujet avec des requêtes SQL, puis
+            calculé des indicateurs pour KDou : CA réalisé avec les fournisseurs de l'UE, CA annuel des desserts et
+            boissons, nombre de produits carnés non commandés et comparaison entre clients pilotes et clients partenaires.
+            Ce site est notre rapport collectif, réalisé en HTML et CSS dans le cadre de la ressource R1.02.
+          </p>
+          <p>
+            Les premières questions d'exploration (clients parisiens, produits des États-Unis à moins de 25 €, produits
+            en carton ou en verre…) se sont bien passées : il s'agissait surtout de filtrer avec WHERE, de trier avec
+            ORDER BY et de faire des jointures entre les tables. Au début, le mode création graphique (QBE) d'Access
+            nous a aidés à voir comment les tables se reliaient, puis nous sommes passés directement au SQL.
+            Le calcul du prix de vente (coût d'achat × coefficient de marge de la catégorie) était aussi simple
+            une fois qu'on avait compris où se trouvait chaque information.
+          </p>
+          <p>
+            Le plus compliqué a été d'interpréter certaines questions. Par exemple, pour « viande et poisson »,
+            un simple AND renvoyait zéro ligne puisqu'un produit n'a qu'une catégorie : il a fallu utiliser des
+            sous-requêtes. Les questions sur les clients pilotes ou les couples de clients parisiens pouvaient se
+            comprendre de plusieurs façons, et la comparaison des commandes a dû être faite en deux étapes. Access
+            nous a aussi posé problème avec sa syntaxe particulière (parenthèses obligatoires dans les jointures,
+            joker « * » au lieu de « % », une seule requête à la fois). Enfin, les données n'étaient pas toujours
+            fiables : un cidre classé dans les poissons, un client parisien avec un code postal en 76, des dates
+            d'envoi avant la date de commande ou encore des lignes de commande en double. Nous avons dû les repérer
+            et les signaler pour ne pas fausser nos résultats.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 - SAE BDD & WEB</p>
+  </footer>
+
+</body>
+</html>
